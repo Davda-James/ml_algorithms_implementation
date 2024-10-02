@@ -29,7 +29,7 @@ class SGDregressor:
 if __name__=='__main__':
     X,Y=load_diabetes(return_X_y=True)
     X_train,X_test,Y_train,Y_test=tts(X,Y,random_state=2,test_size=0.2)
-    sgd=SGDregressor()
+    sgd=SGDregressor(epochs=50) 
     sgd.train(X_train,Y_train)
     Y_predicted=sgd.predict(X_test)
     score=sgd.calculate_accuracy_score(Y_test,Y_predicted)
