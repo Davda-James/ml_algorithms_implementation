@@ -15,7 +15,7 @@ class Ridgeregressor:
         X_train=np.insert(X_train,0,1,axis=1)
         allweights=np.ones(X_train.shape[1])
         for i in range(self.epochs):
-            weight_slope=2*(self.alpha*self.weights + np.dot(np.dot(X_train.T,X_train),self.weights)-np.dot(Y_train.T,X_train))
+            weight_slope=2*(self.alpha*self.weights + np.dot(np.dot(X_train.T,X_train),self.weights)-np.dot(X_train.T,Y_train))
             self.allweights=self.allweights-self.eta*weight_slope
         self.intercept=allweights[0]
         self.weights=allweights[1:]
