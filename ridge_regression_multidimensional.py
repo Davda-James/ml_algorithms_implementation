@@ -4,14 +4,14 @@ from sklearn.metrics import r2_score
 from sklearn.model_selection import train_test_split as tts 
 
 class Ridgeregressor:
-    def __init__(self,alpha=0.01):
+    def __init__(self,alpha=0.185):
         self.alpha=alpha
         self.weights =None
         self.intercept=None 
 
     def train(self,X_train,Y_train):
         identity_mtx=np.identity(X_train.shape[1]+1,dtype=float)
-        X_train=np.hstack((np.ones((X_train.shape[0],1),dtype=float),X_train))
+        X_train=np.insert(X_train,0,1,axis=1)
         Xt_X =np.dot(X_train.T,X_train)
         Xt_y=np.dot(X_train.T,Y_train)
         mid_mtx=np.linalg.inv(Xt_X+self.alpha*identity_mtx)
@@ -32,5 +32,6 @@ if __name__=='__main__':
     Y_predicted=rg.test(X_test)
     score=rg.calculate_score(Y_test,Y_predicted)
     print(rg.weights,rg.intercept)
+    print(score)
 
 
