@@ -32,7 +32,7 @@ class logisticRegressor:
         return np.where(np.dot(xtest,self.coeff_)+self.intercept_>0,1,0)
         
 if __name__=="__main__":
-    x,y=make_classification(n_samples=300,n_features=2,n_informative=1,n_redundant=0,n_classes=2,n_clusters_per_class=1,class_sep=0.8,random_state=80)
+    x,y=make_classification(n_samples=300,n_features=2,n_informative=1,n_redundant=0,n_classes=2,n_clusters_per_class=1,class_sep=5,random_state=80)
     xtrain,xtest,ytrain,ytest=tts(x,y,random_state=2,test_size=0.3)
     lr=logisticRegressor(epochs=1000,learning_rate=0.2)
     lr.train(xtrain,ytrain)
