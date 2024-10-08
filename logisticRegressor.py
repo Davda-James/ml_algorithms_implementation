@@ -10,18 +10,21 @@ class logisticRegressor:
         self.intercept_=None 
         self.coeff_=None
         self.weights=None 
-    def __helper(self,y):
+    def __helper_step(self,y):
         if y>0:
             return 1
         return 0
+    def __helper_sigmoid(self,y):
+        return 1/(1+np.exp(-y))
     def train(self,xtrain,ytrain):
         xtrain_new=np.insert(xtrain,0,1,axis=1)
         self.weights=np.ones(xtrain_new.shape[1])
         for i in range(self.epochs):
             index=np.random.randint(0,xtrain_new.shape[0])
             y_hat=np.dot(xtrain_new[index,],self.weights)
-            y_hat_pred=self.__helper(y_hat)
-            self.weights=self.weights+(ytrain[index]-y_hat_pred)*self.eta*xtrain_new[index]
+            # y_hat_pred_step=self.__helper_step(y_hat)
+            y_hat_pred_sigmoid=self.__helper_sigmoid(y_hat)
+            self.weights=self.weights+(ytrain[index]-y_hat_pred_sigmoid)*self.eta*xtrain_new[index]
         self.intercept_=self.weights[0]
         self.coeff_ =self.weights[1:]
 
@@ -29,7 +32,7 @@ class logisticRegressor:
         return np.where(np.dot(xtest,self.coeff_)+self.intercept_>0,1,0)
         
 if __name__=="__main__":
-    x,y=make_classification(n_samples=300,n_features=2,n_informative=1,n_redundant=0,n_classes=2,n_clusters_per_class=1,class_sep=1,random_state=80)
+    x,y=make_classification(n_samples=300,n_features=2,n_informative=1,n_redundant=0,n_classes=2,n_clusters_per_class=1,class_sep=0.8,random_state=80)
     xtrain,xtest,ytrain,ytest=tts(x,y,random_state=2,test_size=0.3)
     lr=logisticRegressor(epochs=1000,learning_rate=0.2)
     lr.train(xtrain,ytrain)
