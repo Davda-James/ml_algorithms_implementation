@@ -9,17 +9,21 @@ class TreeNode:
         self.value=value
 
 class decisionTree:
+    def __init__(self,max_depth=None):
+        self.max_depth=max_depth
     def fit(self,x,y):
         self.tree=self.build_tree(np.column_stack((x,y)))
-    def build_tree(self,data):
+    def build_tree(self,data,curr_depth=0):
+        if curr_depth>=self.max_depth:
+            return TreeNode(value=self.majority_class(data))
         if len(set(data[:,-1]))==1:
             return TreeNode(value=data[0,-1]) 
         best_feature,best_threshold= self.find_best_split(data)
         if best_feature is None:
             return TreeNode(value=self.majority_class(data))
         left_data,right_data=self.split_data(data,best_feature,best_threshold)
-        left_child=self.build_tree(left_data)
-        right_child=self.build_tree(right_data)
+        left_child=self.build_tree(left_data,curr_depth+1)
+        right_child=self.build_tree(right_data,curr_depth+1)
         return TreeNode(feature=best_feature,threshold=best_threshold,left=left_child,right=right_child)            
     def find_best_split(self,data):
         best_gain=-1
@@ -56,7 +60,9 @@ class decisionTree:
         labels_prob=count/len(data)
         return 1-np.sum(labels_prob**2)
     def majority_class(self,data):
-        return np.bincount(data[:,-1]).argmax()
+        # return np.bincount(data[:,-1]).argmax()
+        labels, counts = np.unique(data[:, -1], return_counts=True)
+        return labels[np.argmax(counts)]
     def predict(self,x):
         predictions=[self._predict(input_data,self.tree) for input_data in x]
         return np.array(predictions)
@@ -76,7 +82,7 @@ class decisionTree:
             
             
 if __name__=='__main__':
-    tree=decisionTree()
+    tree=decisionTree(max_depth=2)
     train_data = pd.DataFrame({
         'Outlook_Sunny': [1, 0, 0, 0, 0],
         'Outlook_Overcast': [0, 1, 0, 0, 1],
@@ -84,7 +90,7 @@ if __name__=='__main__':
         'Temperature': [85, 80, 83, 70, 65],
         'Humidity': [85, 70, 78, 90, 95],
         'Windy': [0, 0, 1, 1, 0],
-        'Play': ['No', 'Yes', 'Yes', 'No', 'No']
+        'Play': ['No', 'Yes', 'No', 'No', 'No']
     })
     X_train = train_data.drop('Play', axis=1).values
     y_train = train_data['Play'].values
